@@ -1,0 +1,11 @@
+# Node
+node_modules/
+.env
+
+# Angular
+dist/
+
+# Mac / Windows / Linux basura
+.DS_Store
+Thumbs.db
+
