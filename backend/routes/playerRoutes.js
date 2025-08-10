@@ -14,6 +14,9 @@ const {
 // ✅ Ruta para obtener todos los jugadores (con filtros y paginación)
 router.get('/players', getAllPlayers);
 
+// ✅ Ruta para exportar jugadores a CSV con filtros
+router.get('/players/export', exportPlayersCSV); // 🆕 ← Esta es la nueva ruta
+
 // ✅ Ruta para obtener un jugador específico por ID
 router.get('/players/:id', getPlayerById);
 
@@ -26,8 +29,6 @@ router.put('/players/:id', updatePlayer);
 // ✅ Ruta para eliminar un jugador
 router.delete('/players/:id', deletePlayer);
 
-// ✅ Ruta para exportar jugadores a CSV con filtros
-router.get('/players/export', exportPlayersCSV); // 🆕 ← Esta es la nueva ruta
 
 module.exports = router;
 
