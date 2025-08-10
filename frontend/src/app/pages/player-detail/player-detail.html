@@ -1,0 +1,30 @@
+<div class="container mt-4" *ngIf="player as p">
+  <h2>{{ p.short_name }}</h2>
+  <p><strong>Club:</strong> {{ p.club_name }}</p>
+  <p><strong>Posición:</strong> {{ p.club_position }}</p>
+  <p><strong>Edad:</strong> {{ p.age }}</p>
+  <p><strong>Versión:</strong> {{ p.fifa_version }}</p>
+
+  <!-- Botones de acción -->
+  <a routerLink="/players" class="btn btn-secondary mt-3">← Volver al listado</a>
+
+  <!-- Botón Editar relativo a /players/:id -->
+  <a class="btn btn-warning mt-3 ms-2"
+     [routerLink]="['edit']"
+     [relativeTo]="route">
+    ✏️ Editar jugador
+  </a>
+
+  <!-- 🎯 Gráfico radar -->
+  <div class="mt-4" style="max-width: 500px;">
+    <canvas baseChart
+      [data]="radarChartData"
+      [options]="radarChartOptions"
+      [type]="'radar'">
+    </canvas>
+  </div>
+</div>
+
+<div *ngIf="!player">
+  <p>Cargando jugador...</p>
+</div>

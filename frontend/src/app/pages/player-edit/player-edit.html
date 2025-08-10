@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <h2>Editar jugador</h2>
+
+  <!-- Mostramos el form solo cuando está creado -->
+  <form *ngIf="playerForm" [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label class="form-label" for="short_name">Nombre corto</label>
+      <input id="short_name" class="form-control" formControlName="short_name" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="long_name">Nombre completo</label>
+      <input id="long_name" class="form-control" formControlName="long_name" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="age">Edad</label>
+      <input id="age" type="number" class="form-control" formControlName="age" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="club_name">Club</label>
+      <input id="club_name" class="form-control" formControlName="club_name" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="club_position">Posición</label>
+      <input id="club_position" class="form-control" formControlName="club_position" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="fifa_version">Versión FIFA</label>
+      <input id="fifa_version" class="form-control" formControlName="fifa_version" />
+    </div>
+
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit" [disabled]="playerForm.invalid">
+        Guardar cambios
+      </button>
+
+      <!-- Volver al detalle -->
+      <a class="btn btn-secondary ms-2" [routerLink]="['/players', playerId]">
+        Cancelar
+      </a>
+    </div>
+  </form>
+
+  <!-- Fallback mientras se arma el form -->
+  <div *ngIf="!playerForm" class="mt-3">
+    Cargando formulario...
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="container">
+  <h2>Listado de jugadores</h2>
+
+  <!-- Acción principal -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex gap-2">
+      <button (click)="downloadCSV()" class="btn btn-success">📥 Descargar CSV</button>
+    </div>
+    <a class="btn btn-primary" [routerLink]="['/players/create']">➕ Crear jugador</a>
+  </div>
+
+  <!-- 🔍 Formulario de filtros -->
+  <form [formGroup]="filtersForm" (ngSubmit)="applyFilters()" class="mb-4">
+    <div class="row g-2">
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Nombre" formControlName="name">
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Club" formControlName="club">
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Posición" formControlName="position">
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Versión" formControlName="version">
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex gap-2">
+      <button type="submit" class="btn btn-outline-primary">🔍 Buscar</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="resetFilters()">🧹 Limpiar</button>
+    </div>
+  </form>
+
+  <!-- 📄 Lista de jugadores -->
+  <ul *ngIf="players.length > 0; else noPlayers" class="list-group">
+    <li *ngFor="let player of players" class="list-group-item d-flex justify-content-between align-items-center">
+      <span>
+        {{ player.short_name }} - {{ player.club_name }} - {{ player.club_position }}
+      </span>
+      <div class="d-flex gap-2">
+        <a [routerLink]="['/players', player.id]" class="btn btn-sm btn-outline-info">Detalles</a>
+        <a [routerLink]="['/players', player.id, 'edit']" class="btn btn-sm btn-outline-warning">✏️ Editar</a>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 🛑 Sin jugadores -->
+  <ng-template #noPlayers>
+    <p class="mt-3">No hay jugadores para mostrar</p>
+  </ng-template>
+
+  <!-- 🔢 Paginación -->
+  <div *ngIf="totalPages > 1" class="mt-4 d-flex justify-content-center align-items-center gap-3">
+    <button class="btn btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 1">
+      « Anterior
+    </button>
+
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+
+    <button class="btn btn-outline-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Siguiente »
+    </button>
+  </div>
+</div>

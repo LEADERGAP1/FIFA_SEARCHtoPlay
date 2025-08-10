@@ -1,0 +1,66 @@
+<div class="container mt-4">
+    <h2>Crear jugador</h2>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label" for="short_name">Nombre corto</label>
+        <input id="short_name" class="form-control" formControlName="short_name" />
+        <div class="text-danger mt-1" *ngIf="form.get('short_name')?.touched && form.get('short_name')?.invalid">
+          El nombre corto es obligatorio.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="long_name">Nombre completo</label>
+        <input id="long_name" class="form-control" formControlName="long_name" />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="age">Edad</label>
+        <input id="age" type="number" class="form-control" formControlName="age" />
+        <div class="text-danger mt-1" *ngIf="form.get('age')?.touched && form.get('age')?.invalid">
+          Edad mínima 10.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="club_name">Club</label>
+        <input id="club_name" class="form-control" formControlName="club_name" />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="club_position">Posición</label>
+        <input id="club_position" class="form-control" formControlName="club_position" />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="fifa_version">Versión FIFA</label>
+        <input id="fifa_version" class="form-control" formControlName="fifa_version" />
+      </div>
+  
+      <!-- 🔹 Nuevos (requeridos por el modelo) -->
+      <div class="mb-3">
+        <label class="form-label" for="nationality_name">Nacionalidad</label>
+        <input id="nationality_name" class="form-control" formControlName="nationality_name" placeholder="ej:Argentina" />
+        <div class="text-danger mt-1" *ngIf="form.get('nationality_name')?.touched && form.get('nationality_name')?.invalid">
+          La nacionalidad es obligatoria.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label" for="fifa_update_date">Fecha de actualización FIFA</label>
+        <input id="fifa_update_date" type="date" class="form-control" formControlName="fifa_update_date" />
+        <div class="text-danger mt-1" *ngIf="form.get('fifa_update_date')?.touched && form.get('fifa_update_date')?.invalid">
+          La fecha es obligatoria.
+        </div>
+      </div>
+  
+      <div class="mt-3">
+        <button class="btn btn-success" type="submit" [disabled]="form.invalid || loading">
+          {{ loading ? 'Creando...' : 'Crear' }}
+        </button>
+        <a class="btn btn-secondary ms-2" [routerLink]="['/players']">Cancelar</a>
+      </div>
+    </form>
+  </div>
+  
