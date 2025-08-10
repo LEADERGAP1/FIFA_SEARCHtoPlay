@@ -10,7 +10,7 @@
   --surface-2:#0f1316;
 
   /* Texto y líneas */
-  --text:#eef2f6;
+  --text:#eef6f2;
   --muted:#9aa7b3;
   --line:#232b2f;
 
@@ -142,3 +142,183 @@ hr{border-color:var(--line)!important; opacity:.6}
 /* Links */
 a{color:#cfeaff}
 a:hover{color:#ffffff; filter:brightness(1.06)}
+
+/* ===== Título principal con estilo logo/neon mejorado ===== */
+.container > h2:first-of-type {
+    position: relative;
+    display: inline-block;
+    font-weight: 800;
+    letter-spacing: .4px;
+    padding: 0.25rem 0.8rem 0.35rem 0.8rem;
+    margin-bottom: 1.8rem; /* más espacio hacia abajo */
+    border-radius: var(--r-sm);
+    
+    /* Gradiente neón */
+    background: linear-gradient(
+      90deg,
+      var(--acc-lime) 0%,
+      var(--acc-cyan) 50%,
+      var(--acc-pink) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  
+    /* Glow */
+    text-shadow: 0 0 18px rgba(51,224,255,0.35),
+                 0 0 28px rgba(38,224,127,0.18);
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.35));
+  
+    /* Animaciones */
+    animation: titleGlowPulse 3.2s ease-in-out infinite;
+    overflow: hidden;
+  }
+  
+  /* Línea decorativa separada */
+  .container > h2:first-of-type::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -14px; /* más separación hacia el botón */
+    height: 5px;
+    background: radial-gradient(30% 120% at 0% 50%, var(--acc-lime), transparent),
+                radial-gradient(30% 120% at 100% 50%, var(--acc-pink), transparent);
+    border-radius: 999px;
+    opacity: 0.85;
+    box-shadow: 0 0 12px rgba(51,224,255,0.25);
+  }
+  
+  /* Efecto de luz que recorre el texto */
+  .container > h2:first-of-type::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(0, 255, 128, 0.8),
+      transparent
+    );
+    transform: skewX(-20deg);
+    animation: sweepLight 4s ease-in-out infinite;
+  }
+  
+  /* Animaciones */
+  @keyframes titleGlowPulse {
+    0%, 100% {
+      text-shadow: 0 0 16px rgba(51,224,255,0.35),
+                   0 0 26px rgba(38,224,127,0.16);
+    }
+    50% {
+      text-shadow: 0 0 26px rgba(51,224,255,0.55),
+                   0 0 40px rgba(255,79,216,0.20);
+    }
+  }
+  
+  @keyframes sweepLight {
+    0% { left: -50%; }
+    50% { left: 120%; }
+    100% { left: 120%; }
+  }
+
+/* Marco/aura neon para el radar (wrapper) */
+.radar-frame{
+    position: relative;
+    padding: 12px;
+    border-radius: var(--r-lg);
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(51,224,255,.06), transparent 60%),
+      radial-gradient(120% 100% at 0% 100%, rgba(38,224,127,.05), transparent 60%),
+      #0b0f13;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.05),
+      0 14px 32px rgba(0,0,0,.35);
+  }
+  
+  /* halo exterior animado */
+  .radar-frame::before{
+    content:"";
+    position:absolute; inset:-8px;
+    border-radius: inherit;
+    pointer-events:none;
+    background:
+      radial-gradient(120% 120% at 0% 100%, rgba(38,224,127,.12), transparent 60%),
+      radial-gradient(120% 120% at 100% 0%, rgba(51,224,255,.12), transparent 60%);
+    filter: blur(8px);
+    animation: radarAura 6s ease-in-out infinite;
+    opacity:.9;
+  }
+  
+  /* brillo que “barre” el borde */
+  .radar-frame::after{
+    content:"";
+    position:absolute; inset:0;
+    border-radius: inherit;
+    pointer-events:none;
+    background:
+      conic-gradient(from 0deg at 50% 50%,
+        rgba(51,224,255,.14),
+        rgba(255,79,216,.10),
+        rgba(38,224,127,.12),
+        rgba(51,224,255,.14)
+      );
+    mix-blend-mode: screen;
+    mask: radial-gradient(closest-side, transparent 78%, black 79%);
+    opacity:.35;
+    animation: radarSweep 7s linear infinite;
+  }
+  
+  /* el propio canvas también gana marco suave */
+  .radar-frame canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius: calc(var(--r-lg) - 8px);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.05),
+      0 0 0 2px rgba(19,168,209,.12);
+    background: radial-gradient(700px 380px at 100% 0%, rgba(51,224,255,.06), transparent);
+  }
+  
+  @keyframes radarAura {
+    0%,100% { filter: blur(7px); opacity:.85; }
+    50%     { filter: blur(10px); opacity:1;  }
+  }
+  @keyframes radarSweep {
+    0%   { transform: rotate(0deg);   opacity:.35; }
+    50%  { opacity:.5; }
+    100% { transform: rotate(360deg); opacity:.35; }
+  }
+
+  /* ===== Radar Chart estilo futurista neón ===== */
+canvas {
+    background: radial-gradient(circle at center, rgba(0, 255, 128, 0.05) 0%, transparent 70%),
+                linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,1));
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.3), 
+                inset 0 0 30px rgba(0, 255, 128, 0.08);
+    backdrop-filter: blur(6px);
+  }
+  
+  /* Efecto de brillo animado alrededor del gráfico */
+  canvas::after {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border-radius: 25px;
+    box-shadow: 0 0 25px rgba(0, 255, 128, 0.6);
+    opacity: 0.3;
+    animation: pulseGlow 3s infinite ease-in-out;
+    pointer-events: none;
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.3; box-shadow: 0 0 25px rgba(0, 255, 128, 0.6); }
+    50% { opacity: 0.6; box-shadow: 0 0 35px rgba(0, 255, 128, 0.8); }
+  }
+  
