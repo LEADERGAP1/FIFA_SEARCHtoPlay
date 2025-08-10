@@ -24,7 +24,7 @@ export class PlayerDetailComponent implements OnInit {
   ) {}
 
   radarChartData: ChartConfiguration<'radar'>['data'] = {
-    labels: ['Pase', 'Disparo', 'Regate', 'Velocidad', 'Defensa', 'Físico'],
+    labels: ['Pase', 'Disparo', 'Regate', 'Velocidad', 'Defensa'],
     datasets: [
       {
         data: [],
@@ -61,7 +61,6 @@ export class PlayerDetailComponent implements OnInit {
             this.player.Skill.dribbling,
             this.player.Skill.pace,
             this.player.Skill.defending,
-            this.player.Skill.physicality
           ];
         }
 
