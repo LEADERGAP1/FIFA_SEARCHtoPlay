@@ -1,2 +1,144 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'bootstrap/dist/css/bootstrap.min.css';
+/* ====== THEME: Dark modern + neon pills (solo CSS) ====== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root{
+  /* Fondo y superficies */
+  --bg:#151a18;               /* gris verdoso oscuro (base) */
+  --surface:#0c0f12;          /* tarjetas/panels */
+  --surface-2:#0f1316;
+
+  /* Texto y líneas */
+  --text:#eef2f6;
+  --muted:#9aa7b3;
+  --line:#232b2f;
+
+  /* Accents “neón” inspirados en la imagen */
+  --acc-pink:#ff4fd8;
+  --acc-lime:#26e07f;
+  --acc-yellow:#ffe34f;
+  --acc-cyan:#33e0ff;
+
+  /* Radios y sombras “mobile card” */
+  --r-lg:24px;
+  --r-sm:18px;
+  --shadow:0 18px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+/* Base */
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1200px 800px at 110% -10%, rgba(51,224,255,.10), transparent),
+    radial-gradient(1000px 700px at -15% 110%, rgba(38,224,127,.08), transparent),
+    var(--bg);
+  color:var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+.container{padding-top:20px;padding-bottom:36px}
+
+/* Headings y texto */
+h1,h2,h3{letter-spacing:.2px;margin-bottom:.6rem}
+h2{font-weight:700}
+.text-muted{color:var(--muted)!important}
+
+/* ===== Cards / Panels ===== */
+.card, .list-group, .table, .form-card{
+  background:linear-gradient(180deg,var(--surface),var(--surface-2))!important;
+  border:0!important;
+  border-radius:var(--r-lg)!important;
+  box-shadow:var(--shadow);
+}
+.list-group{overflow:hidden;border:1px solid var(--line)}
+.list-group-item{
+  background:transparent!important; color:var(--text)!important;
+  border-color:var(--line)!important;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.list-group-item:hover{background:rgba(255,255,255,.035)!important}
+
+/* ===== Pills (botones) ===== */
+.btn{
+  border-radius:9999px!important;           /* pill */
+  border:1px solid var(--line);
+  padding:.55rem 1rem;
+  transition:transform .06s ease, box-shadow .2s, filter .2s;
+  box-shadow:0 0 0 rgba(0,0,0,0);
+}
+.btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.32)}
+.btn:active{transform:translateY(0); box-shadow:none}
+
+/* Primario = lima (neón) */
+.btn-primary{
+  background:linear-gradient(180deg,var(--acc-lime),#11c06a)!important;
+  border:0!important; color:#07160f!important;
+}
+/* Secundario = pill blanco (como la tarjeta de “Notifications” en la imagen) */
+.btn-secondary{
+  background:#ffffff!important; color:#0c0f12!important; border:0!important;
+}
+/* Outline primario con brillo */
+.btn-outline-primary{
+  color:var(--acc-cyan)!important;
+  border-color:rgba(51,224,255,.55)!important;
+}
+.btn-outline-primary:hover{background:rgba(51,224,255,.12)!important}
+
+/* Variantes útiles para tus botones existentes */
+.btn-success{
+  background:linear-gradient(180deg,#31e07a,#16b864)!important; border:0!important; color:#05130a!important;
+}
+.btn-warning{
+  background:linear-gradient(180deg,var(--acc-yellow),#f3c600)!important; border:0!important; color:#1d1500!important;
+}
+
+/* ===== Formularios (inputs pill) ===== */
+.form-control, .form-select{
+  background:#0a0d10!important; color:var(--text)!important;
+  border:1px solid var(--line)!important; border-radius:9999px!important;
+  padding:.6rem 1rem;
+}
+.form-control::placeholder{color:#7f8a95!important}
+.form-control:focus, .form-select:focus{
+  border-color:rgba(51,224,255,.8)!important;
+  box-shadow:0 0 0 4px rgba(51,224,255,.22)!important;
+}
+
+/* ===== Badges estilo “pastilla” ===== */
+.badge{
+  border-radius:9999px; padding:.45rem .7rem; font-weight:600;
+  border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text);
+}
+
+/* ===== Tablas limpias y contrastadas ===== */
+.table{color:var(--text); border-color:var(--line); margin:0}
+.table thead th{color:#dbe7f5; font-weight:700; border-bottom-color:var(--line)}
+.table td,.table th{border-color:var(--line)}
+.table-hover tbody tr:hover{background:rgba(255,255,255,.035)}
+
+/* ===== Canvas (chart) con marco suave ===== */
+canvas{background:radial-gradient(700px 380px at 100% 0%, rgba(51,224,255,.06), transparent);
+  border-radius:var(--r-lg);}
+
+/* ===== Navbar si usás .navbar ===== */
+.navbar.navbar-dark{
+  background:rgba(10,14,18,.7)!important;
+  border-bottom:1px solid var(--line)!important;
+  backdrop-filter: blur(8px) saturate(140%);
+}
+
+/* ===== Estados y detalles ===== */
+hr{border-color:var(--line)!important; opacity:.6}
+.btn[disabled], .btn:disabled{opacity:.6!important; transform:none!important; box-shadow:none!important}
+
+/* Scrollbar sutil */
+*{scrollbar-width:thin; scrollbar-color: var(--acc-cyan) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--acc-cyan),#13a8d1);border-radius:12px}
+*::-webkit-scrollbar-track{background:transparent}
+
+/* Links */
+a{color:#cfeaff}
+a:hover{color:#ffffff; filter:brightness(1.06)}
