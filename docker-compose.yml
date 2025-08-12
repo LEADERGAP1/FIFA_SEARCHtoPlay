@@ -1,25 +1,6 @@
-version: '3.8'
-
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: backend-app
-    ports:
-      - "3000:3000"
-    environment:
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=admin123
-      - DB_NAME=fifa_players_db
-      - DB_PORT=3306
-      - JWT_SECRET=clave_super_secreta_123
-    depends_on:
-      - mysql
-
   mysql:
-    image: mysql:8
+    image: mysql:8.0
     container_name: mysql-db
     restart: always
     environment:
@@ -29,7 +10,59 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    command: ["mysqld","--default-authentication-plugin=mysql_native_password"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin123"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      fifa-net:
+        aliases: [mysql]
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-app
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: mysql
+      # En .env: DB_USER=root, DB_PASSWORD=admin123, DB_NAME=fifa_players_db, DB_PORT=3306, PORT=3000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      fifa-net:
+        aliases: [backend]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fifa-frontend
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy   # <— acá el cambio
+    ports:
+      - "8080:80"
+    networks:
+      fifa-net: {}
 
 volumes:
   mysql_data:
+
+networks:
+  fifa-net:
+    driver: bridge
 

@@ -1,11 +1,49 @@
-# Node
-node_modules/
-.env
-
-# Angular
-dist/
-
-# Mac / Windows / Linux basura
+# --- SO (mac / win) ---
 .DS_Store
 Thumbs.db
+
+# --- Node / JS ---
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# --- Env (mantener los samples en el repo) ---
+.env
+.env.*
+!.env.sample
+!.env.example
+**/.env
+**/.env.*
+!**/.env.sample
+!**/.env.example
+
+# --- Builds / artefactos ---
+dist/
+**/dist/
+build/
+**/build/
+*.tsbuildinfo
+
+# --- Angular ---
+.angular/cache/
+**/.angular/cache/
+
+# --- Cobertura / reports ---
+coverage/
+**/coverage/
+.nyc_output/
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.iml
+.history/
+
+# --- Docker (overrides locales opcionales) ---
+docker-compose.override.yml
+*.local.yml
 

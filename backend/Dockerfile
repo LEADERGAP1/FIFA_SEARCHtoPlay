@@ -1,21 +1,22 @@
-# Imagen base
-FROM node:18
-
-# Crear y usar el directorio de trabajo dentro del contenedor
+# Etapa base (más liviana)
+FROM node:20-alpine AS base
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# Solo manifiestos primero (cache eficiente)
 COPY package*.json ./
+RUN npm ci --only=production
 
-# Instalar dependencias
-RUN npm install
-
-# Copiar el resto de los archivos del proyecto
+# Copiamos el resto del código
 COPY . .
 
-# Exponer el puerto que usa tu backend
+# Variables de entorno típicas
+ENV NODE_ENV=production \
+    PORT=3000
+
 EXPOSE 3000
 
-# Comando para iniciar el servidor
-CMD ["node", "index.js"]
+# Si tenés script start en package.json, dejá:
+CMD ["node","index.js"]
+# o si no:
+# CMD ["node","index.js"]
 

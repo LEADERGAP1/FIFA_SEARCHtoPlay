@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PlayersService {
-  private apiUrl = 'http://localhost:3000/api/players';
+  private apiUrl = '/api/players';
+//  private apiUrl = 'http://localhost:3000/api/players';  lo que cambie a ultimo momento que segun gpt funciona local y docker
+
 
   constructor(private http: HttpClient) {}
 
