@@ -1,3 +1,5 @@
+# (sin clave "version")
+
 services:
   mysql:
     image: mysql:8.0
@@ -10,12 +12,19 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    command: ["mysqld","--default-authentication-plugin=mysql_native_password"]
+      - ./backend/data:/var/lib/mysql-files     # << sin :ro
+    command:
+      [
+        "mysqld",
+        "--default-authentication-plugin=mysql_native_password",
+        "--secure-file-priv=/var/lib/mysql-files"
+      ]
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin123"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
     networks:
       fifa-net:
         aliases: [mysql]
@@ -30,7 +39,7 @@ services:
       - ./backend/.env
     environment:
       DB_HOST: mysql
-      # En .env: DB_USER=root, DB_PASSWORD=admin123, DB_NAME=fifa_players_db, DB_PORT=3306, PORT=3000
+      SEED_DEMO: "false"
     depends_on:
       mysql:
         condition: service_healthy
@@ -45,6 +54,38 @@ services:
       fifa-net:
         aliases: [backend]
 
+  seed:
+    image: mysql:8.0
+    container_name: db-seed
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: >
+      sh -lc "
+        echo 'Seed: esperando MySQL...';
+        until mysqladmin ping -hmysql -uroot -padmin123 --silent; do sleep 2; done;
+        EXIST=$$(mysql -hmysql -uroot -padmin123 -Nse 'SELECT COUNT(*) FROM fifa_players_db.players' 2>/dev/null || echo 0);
+        if [ \"$$EXIST\" -ge 1000 ]; then
+          echo 'Seed: ya hay datos ('\"$$EXIST\"'), no reimporto.'; exit 0;
+        fi;
+        echo 'Seed: importando /var/lib/mysql-files/players_import.csv...';
+        mysql -hmysql -uroot -padmin123 -e \"
+          USE fifa_players_db;
+          SET FOREIGN_KEY_CHECKS=0; TRUNCATE skills; TRUNCATE players; SET FOREIGN_KEY_CHECKS=1;
+          LOAD DATA INFILE '/var/lib/mysql-files/players_import.csv'
+          INTO TABLE players
+          FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"'
+          LINES TERMINATED BY '\\n'
+          IGNORE 1 LINES
+          (short_name,long_name,age,nationality_name,club_name,club_position,fifa_version,@udate)
+          SET fifa_update_date = @udate;
+        \";
+        echo 'Seed: import terminado.';
+      "
+    restart: "no"
+    networks:
+      - fifa-net
+
   frontend:
     build:
       context: ./frontend
@@ -53,7 +94,7 @@ services:
     restart: always
     depends_on:
       backend:
-        condition: service_healthy   # <— acá el cambio
+        condition: service_healthy
     ports:
       - "8080:80"
     networks:
