@@ -3,25 +3,33 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface LoginResponse {
+  token?: string;
+  access_token?: string;
+  user?: { id: number; nombre: string; email: string };
+  message?: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  // Ruta relativa: pasa por Nginx en Docker y sirve también en dev con proxy
+  private apiUrl = '/api/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(credentials: { email: string, password: string }): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials)
-      .pipe(
-        tap(response => {
-          localStorage.setItem('token', response.token);
-        })
-      );
+  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(res => {
+        const token = res?.access_token ?? res?.token;
+        if (token) localStorage.setItem('token', token);
+        if (res?.user) localStorage.setItem('user', JSON.stringify(res.user));
+      })
+    );
   }
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 
@@ -31,5 +39,10 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getCurrentUser(): { id: number; nombre: string; email: string } | null {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
   }
 }

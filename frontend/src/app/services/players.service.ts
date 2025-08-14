@@ -1,15 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PlayersService {
+  // Ruta relativa: en Docker pasa por Nginx (/api -> backend)
   private apiUrl = '/api/players';
-//  private apiUrl = 'http://localhost:3000/api/players';  lo que cambie a ultimo momento que segun gpt funciona local y docker
-
+  //  Si alguna vez volvés a dev sin proxy: private apiUrl = 'http://localhost:3000/api/players';
 
   constructor(private http: HttpClient) {}
 
+  // --- Helpers ---
+  private getAuthHeaders(): HttpHeaders | undefined {
+    const token = localStorage.getItem('token');
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+  }
+
+  private buildParams(filters: Record<string, any>): HttpParams {
+    let params = new HttpParams();
+    Object.entries(filters || {}).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') params = params.set(k, String(v));
+    });
+    return params;
+  }
+
+  // --- API ---
   getPlayers(filters: {
     name?: string;
     club?: string;
@@ -18,16 +33,9 @@ export class PlayersService {
     page?: number;
     limit?: number;
   }): Observable<any> {
-    let params = new HttpParams();
-
-    for (const key in filters) {
-      const value = filters[key as keyof typeof filters];
-      if (value !== undefined && value !== null && value !== '') {
-        params = params.set(key, value);
-      }
-    }
-
-    return this.http.get(this.apiUrl, { params });
+    const params = this.buildParams(filters);
+    const headers = this.getAuthHeaders();
+    return this.http.get(this.apiUrl, { params, headers });
   }
 
   downloadCSV(filters: {
@@ -36,38 +44,24 @@ export class PlayersService {
     position?: string;
     version?: string;
   }): Observable<Blob> {
-    let params = new HttpParams();
-
-    for (const key in filters) {
-      const value = filters[key as keyof typeof filters];
-      if (value !== undefined && value !== null && value !== '') {
-        params = params.set(key, value);
-      }
-    }
-
-    const exportUrl = `${this.apiUrl}/export`;
-
-    return this.http.get(exportUrl, {
-      params,
-      responseType: 'blob'
-    });
+    const params = this.buildParams(filters);
+    const headers = this.getAuthHeaders();
+    // El cast evita la queja de TS con responseType
+    return this.http.get(`${this.apiUrl}/export`, { params, responseType: 'blob', headers }) as Observable<Blob>;
   }
 
-  /**
-   * Nuevo: Obtener jugador por ID
-   */
   getPlayerById(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/${id}`, { headers });
   }
 
   updatePlayer(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+    const headers = this.getAuthHeaders();
+    return this.http.put(`${this.apiUrl}/${id}`, data, { headers });
   }
 
-  createPlayer(payload: any) {
-    return this.http.post<any>(this.apiUrl, payload);
+  createPlayer(payload: any): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(this.apiUrl, payload, { headers });
   }
-  
-  
 }
-
