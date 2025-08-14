@@ -26,3 +26,6 @@ git clone <URL_DE_REPO> FIFA_SEARCHtoPlay
 cd FIFA_SEARCHtoPlay
 
 docker compose up -d --build
+
+usuario : admin@demo.com
+contraseña : admin123
